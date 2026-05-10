@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CLAUDE.md | todo-app</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="CLAUDE.md" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://chae-1001.github.io/todo-app/Study-02/CLAUDE.html" />
+<meta property="og:url" content="https://chae-1001.github.io/todo-app/Study-02/CLAUDE.html" />
+<meta property="og:site_name" content="todo-app" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CLAUDE.md" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"CLAUDE.md","url":"https://chae-1001.github.io/todo-app/Study-02/CLAUDE.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/todo-app/assets/css/style.css?v=1c5de892468283c97a34934c9875a7b91ddcd383">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/todo-app/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="https://chae-1001.github.io/todo-app/">todo-app</a></h1>
+      
+
+      <h1 id="claudemd">CLAUDE.md</h1>
+
+<p>This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.</p>
+
+<h2 id="project">Project</h2>
+
+<p>Single-page personal todo app — three files, no dependencies, no build tool.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>File</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">index.html</code></td>
+      <td>Markup, ARIA attributes, semantic structure</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">style.css</code></td>
+      <td>All styles using CSS custom properties for theming</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">script.js</code></td>
+      <td>All logic — ~450 lines, heavily commented</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="running">Running</h2>
+
+<p>Open <code class="language-plaintext highlighter-rouge">index.html</code> directly in a browser. No server required.</p>
+
+<h2 id="architecture">Architecture</h2>
+
+<p><code class="language-plaintext highlighter-rouge">script.js</code> is flat (no classes). Logical sections, in order:</p>
+
+<ol>
+  <li><strong>Constants</strong> — storage keys, category list, filter shortcut map</li>
+  <li><strong>Quotes</strong> — <code class="language-plaintext highlighter-rouge">QUOTES[]</code>, <code class="language-plaintext highlighter-rouge">getDailyQuote()</code> (localStorage-cached per day), <code class="language-plaintext highlighter-rouge">getEncouragement(pct)</code></li>
+  <li><strong>Storage</strong> — <code class="language-plaintext highlighter-rouge">load()</code>, <code class="language-plaintext highlighter-rouge">save()</code> (debounced 150ms), per-key helpers</li>
+  <li><strong>Utilities</strong> — <code class="language-plaintext highlighter-rouge">debounce()</code>, <code class="language-plaintext highlighter-rouge">timeAgo()</code>, <code class="language-plaintext highlighter-rouge">sortedVisible()</code>, <code class="language-plaintext highlighter-rouge">highlightText()</code>, <code class="language-plaintext highlighter-rouge">announce()</code></li>
+  <li><strong>State</strong> — <code class="language-plaintext highlighter-rouge">todos</code>, <code class="language-plaintext highlighter-rouge">filter</code>, <code class="language-plaintext highlighter-rouge">sortMode</code>, <code class="language-plaintext highlighter-rouge">searchQuery</code>, <code class="language-plaintext highlighter-rouge">editingId</code>, <code class="language-plaintext highlighter-rouge">isDark</code>, <code class="language-plaintext highlighter-rouge">undoBuffer</code>, animation tracking</li>
+  <li><strong>DOM refs</strong> — all <code class="language-plaintext highlighter-rouge">getElementById</code> calls grouped here</li>
+  <li><strong>Theme</strong> — <code class="language-plaintext highlighter-rouge">applyTheme()</code>, <code class="language-plaintext highlighter-rouge">toggleTheme()</code></li>
+  <li><strong>Toast</strong> — <code class="language-plaintext highlighter-rouge">showToast(msg, { undoable, duration })</code></li>
+  <li><strong>Modal</strong> — <code class="language-plaintext highlighter-rouge">showModal(message, buttons[])</code> — fully generic, handles focus trap + ESC + overlay click</li>
+  <li><strong>Dashboard</strong> — <code class="language-plaintext highlighter-rouge">renderDashboard()</code> — stats, progress bars, encouragement, <code class="language-plaintext highlighter-rouge">beforeunload</code> flush</li>
+  <li><strong>Item builders</strong> — <code class="language-plaintext highlighter-rouge">attachDragHandlers(li, todo)</code>, <code class="language-plaintext highlighter-rouge">makeViewItem(todo)</code>, <code class="language-plaintext highlighter-rouge">makeEditItem(todo)</code></li>
+  <li><strong>Render</strong> — <code class="language-plaintext highlighter-rouge">render()</code> — uses <code class="language-plaintext highlighter-rouge">DocumentFragment</code> for batched DOM writes</li>
+  <li><strong>Actions</strong> — <code class="language-plaintext highlighter-rouge">addTodo</code>, <code class="language-plaintext highlighter-rouge">toggle</code>, <code class="language-plaintext highlighter-rouge">removeWithAnim</code>, <code class="language-plaintext highlighter-rouge">undoDelete</code>, <code class="language-plaintext highlighter-rouge">clearCompleted</code>, <code class="language-plaintext highlighter-rouge">startEdit</code>, <code class="language-plaintext highlighter-rouge">setFilter</code>, <code class="language-plaintext highlighter-rouge">setSort</code>, <code class="language-plaintext highlighter-rouge">reorderTodos</code></li>
+  <li><strong>Export / Import</strong> — <code class="language-plaintext highlighter-rouge">exportData()</code>, <code class="language-plaintext highlighter-rouge">importData(file)</code> with 3-option modal</li>
+  <li><strong>Event listeners</strong> — all wired here</li>
+  <li><strong>Init</strong> — <code class="language-plaintext highlighter-rouge">applyTheme()</code>, <code class="language-plaintext highlighter-rouge">renderQuote()</code>, <code class="language-plaintext highlighter-rouge">render()</code></li>
+</ol>
+
+<h2 id="data-shape-localstoragetodos">Data shape (<code class="language-plaintext highlighter-rouge">localStorage["todos"]</code>)</h2>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;crypto.randomUUID()&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string (max 200 chars)"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">"업무"</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="s2">"개인"</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="s2">"공부"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"completed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"createdAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;ISO 8601&gt;"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Other keys: <code class="language-plaintext highlighter-rouge">todos_filter</code>, <code class="language-plaintext highlighter-rouge">todos_sort</code>, <code class="language-plaintext highlighter-rouge">theme</code>, <code class="language-plaintext highlighter-rouge">daily_quote</code></p>
+
+<h2 id="export-file-format-my-tasks-yyyy-mm-ddjson">Export file format (<code class="language-plaintext highlighter-rouge">my-tasks-YYYY-MM-DD.json</code>)</h2>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nl">"exportedAt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nl">"appName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Tasks"</span><span class="p">,</span><span class="w"> </span><span class="nl">"todos"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Import also accepts a raw array <code class="language-plaintext highlighter-rouge">[...]</code> for backward compatibility.</p>
+
+<h2 id="sort-modes">Sort modes</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Value</th>
+      <th>Behaviour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">status</code> (default)</td>
+      <td>Incomplete first, then newest</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">newest</code></td>
+      <td>By <code class="language-plaintext highlighter-rouge">createdAt</code> desc</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">oldest</code></td>
+      <td>By <code class="language-plaintext highlighter-rouge">createdAt</code> asc</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">category</code></td>
+      <td>Alphabetical by category, then newest</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">manual</code></td>
+      <td>Preserves <code class="language-plaintext highlighter-rouge">todos</code> array order; drag handles visible</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="drag--drop-manual-sort-only">Drag &amp; drop (manual sort only)</h2>
+
+<p>HTML5 Drag and Drop API. <code class="language-plaintext highlighter-rouge">attachDragHandlers(li, todo)</code> adds <code class="language-plaintext highlighter-rouge">dragstart/dragend/dragover/dragleave/drop</code>. Hidden on touch devices via <code class="language-plaintext highlighter-rouge">@media (hover: none)</code> + mobile CSS. <code class="language-plaintext highlighter-rouge">reorderTodos(srcId, targetId, insertBefore)</code> mutates <code class="language-plaintext highlighter-rouge">todos</code> in-place.</p>
+
+<h2 id="category-colours">Category colours</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Tag bg</th>
+      <th>Tag text</th>
+      <th>Cat bar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>업무</td>
+      <td><code class="language-plaintext highlighter-rouge">#dbeafe</code> / dark <code class="language-plaintext highlighter-rouge">#1e3a5f</code></td>
+      <td><code class="language-plaintext highlighter-rouge">#4A90E2</code> / <code class="language-plaintext highlighter-rouge">#60a5fa</code></td>
+      <td><code class="language-plaintext highlighter-rouge">#4A90E2</code></td>
+    </tr>
+    <tr>
+      <td>개인</td>
+      <td><code class="language-plaintext highlighter-rouge">#dcfce7</code> / dark <code class="language-plaintext highlighter-rouge">#14532d</code></td>
+      <td><code class="language-plaintext highlighter-rouge">#27AE60</code> / <code class="language-plaintext highlighter-rouge">#4ade80</code></td>
+      <td><code class="language-plaintext highlighter-rouge">#27AE60</code></td>
+    </tr>
+    <tr>
+      <td>공부</td>
+      <td><code class="language-plaintext highlighter-rouge">#ede9fe</code> / dark <code class="language-plaintext highlighter-rouge">#3b1d5e</code></td>
+      <td><code class="language-plaintext highlighter-rouge">#8E44AD</code> / <code class="language-plaintext highlighter-rouge">#c084fc</code></td>
+      <td><code class="language-plaintext highlighter-rouge">#8E44AD</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="keyboard-shortcuts">Keyboard shortcuts</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Shortcut</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Alt+N</code></td>
+      <td>Focus add input</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Alt+1~4</code></td>
+      <td>Filter: 전체/업무/개인/공부</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Alt+D</code></td>
+      <td>Toggle dark mode</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Enter</code> (input)</td>
+      <td>Add todo</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Enter</code> (edit)</td>
+      <td>Commit inline edit</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ESC</code> (edit)</td>
+      <td>Cancel inline edit</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ESC</code> (modal)</td>
+      <td>Close modal</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Shortcuts disabled while <code class="language-plaintext highlighter-rouge">editingId</code> is set.</p>
+
+<h2 id="undo-system">Undo system</h2>
+
+<p><code class="language-plaintext highlighter-rouge">undoBuffer = { items: [{ todo, index }], label }</code>. Set by <code class="language-plaintext highlighter-rouge">removeWithAnim</code> and <code class="language-plaintext highlighter-rouge">clearCompleted</code>. Cleared by <code class="language-plaintext highlighter-rouge">undoDelete()</code> or when a non-undoable toast replaces the current one. Single-item undo restores at original index; bulk undo appends to end.</p>
+
+<h2 id="accessibility">Accessibility</h2>
+
+<ul>
+  <li>All interactive elements have <code class="language-plaintext highlighter-rouge">aria-label</code></li>
+  <li>Filter buttons use <code class="language-plaintext highlighter-rouge">aria-pressed</code></li>
+  <li>Progress bars use <code class="language-plaintext highlighter-rouge">role="progressbar"</code> with <code class="language-plaintext highlighter-rouge">aria-valuenow</code></li>
+  <li><code class="language-plaintext highlighter-rouge">#sr-live</code> (<code class="language-plaintext highlighter-rouge">role="alert"</code>, <code class="language-plaintext highlighter-rouge">aria-live="assertive"</code>) for immediate screen reader announcements</li>
+  <li>Modal uses focus trap (Tab cycling) and restores focus to trigger element on close</li>
+  <li><code class="language-plaintext highlighter-rouge">announce(msg)</code> helper clears then re-sets text to force re-read</li>
+</ul>
+
+<h2 id="performance-notes">Performance notes</h2>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">debounce(fn, 200)</code> on search input — avoids render on every keystroke</li>
+  <li><code class="language-plaintext highlighter-rouge">save()</code> is debounced 150ms — batches rapid state changes; <code class="language-plaintext highlighter-rouge">beforeunload</code> flushes any pending write</li>
+  <li><code class="language-plaintext highlighter-rouge">render()</code> uses <code class="language-plaintext highlighter-rouge">DocumentFragment</code> — single DOM insertion regardless of list size</li>
+  <li><code class="language-plaintext highlighter-rouge">renderDashboard()</code> uses double <code class="language-plaintext highlighter-rouge">requestAnimationFrame</code> for CSS transition on bar width</li>
+  <li>Animation classes (<code class="language-plaintext highlighter-rouge">entering</code>, <code class="language-plaintext highlighter-rouge">toggling</code>) applied to newly-created <code class="language-plaintext highlighter-rouge">li</code> elements before <code class="language-plaintext highlighter-rouge">appendChild</code></li>
+</ul>
+
+<h2 id="constraints">Constraints</h2>
+
+<ul>
+  <li>No external dependencies, no build step.</li>
+  <li><code class="language-plaintext highlighter-rouge">render()</code> does full <code class="language-plaintext highlighter-rouge">innerHTML</code> replacement — no virtual DOM / diffing.</li>
+  <li><code class="language-plaintext highlighter-rouge">highlightText()</code> uses <code class="language-plaintext highlighter-rouge">createTextNode</code> + <code class="language-plaintext highlighter-rouge">&lt;mark&gt;</code> — never <code class="language-plaintext highlighter-rouge">innerHTML</code> with user data (XSS-safe).</li>
+  <li><code class="language-plaintext highlighter-rouge">localStorage.getItem</code> / <code class="language-plaintext highlighter-rouge">setItem</code> wrapped in try/catch; <code class="language-plaintext highlighter-rouge">QuotaExceededError</code> surfaces as toast.</li>
+</ul>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+  </body>
+</html>
